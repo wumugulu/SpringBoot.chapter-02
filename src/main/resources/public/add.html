@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>add</title>
+<script type="text/javascript">
+var xmlhttp;
+function addByAjax() {
+	bookId=document.getElementById('id').value;
+	bookName=document.getElementById('name').value;
+	bookAuthor=document.getElementById('author').value;
+	bookTotalPage=document.getElementById('totalPage').value;
+
+	para="id=" + bookId + "&name=" + bookName + "&author=" + bookAuthor + "&totalPage=" + bookTotalPage;
+	url="/books";
+
+	xmlhttp=null;
+	if (window.XMLHttpRequest) {
+		// all modern browsers
+		xmlhttp=new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		// for IE5, IE6
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	if (xmlhttp!=null){
+		xmlhttp.onreadystatechange=state_Change;
+		xmlhttp.open("POST", url, true);
+		xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
+		xmlhttp.send(para);
+	} else {
+		alert("Your browser does not support XMLHTTP.");
+	}
+}
+
+function state_Change() {
+	if (xmlhttp.readyState==4) {
+		// 4 = "loaded"
+		if (xmlhttp.status==200) {
+			// 200 = "OK"
+			document.getElementById('resultData').innerHTML=xmlhttp.responseText;
+		} else {
+			alert("Problem retrieving data:" + xmlhttp.statusText);
+		}
+	}
+}
+
+</script>
+</head>
+<body>
+
+	<h1>3. 新增Book接口测试</h1>
+	<p>POST -- /books</p>
+	<hr/>
+
+	表单方式：<br/>
+	<form action="/books" method="POST" id="test_form">
+		提交参数：<br/>
+		id:<input type="text" name="id" id="id" /><br/>
+		name:<input type="text" name="name" id="name" /><br/>
+		author:<input type="text" name="author" id="author" /><br/>
+		totalPage:<input type="text" name="totalPage" id="totalPage" /><br/>
+		<br/><br/>
+		<input type="submit" value="add by form" />
+	</form>
+	<hr/>
+
+	Ajax方式：<br/>
+	<button onclick="addByAjax()">add by Ajax</button><br/>
+	<textarea id="resultData" rows="15" cols="50">接口返回的数据会显示在这里</textarea>
+
+</body>
+</html>

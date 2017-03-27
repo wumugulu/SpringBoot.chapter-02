@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>delete</title>
+<script type="text/javascript">
+var xmlhttp;
+function deleteByAjax() {
+	bookId=document.getElementById('bookId').value;
+
+	url="/books/" + bookId;
+
+	xmlhttp=null;
+	if (window.XMLHttpRequest) {
+		// all modern browsers
+		xmlhttp=new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		// for IE5, IE6
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	if (xmlhttp!=null){
+		xmlhttp.onreadystatechange=state_Change;
+		xmlhttp.open("DELETE", url, true);
+		xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
+		xmlhttp.send();
+	} else {
+		alert("Your browser does not support XMLHTTP.");
+	}
+}
+
+function state_Change() {
+	if (xmlhttp.readyState==4) {
+		// 4 = "loaded"
+		if (xmlhttp.status==200) {
+			// 200 = "OK"
+			document.getElementById('resultData').innerHTML=xmlhttp.responseText;
+		} else {
+			alert("Problem retrieving data:" + xmlhttp.statusText);
+		}
+	}
+}
+
+function submitForm() {
+	bookId=document.getElementById('bookId').value;
+
+	myForm=document.getElementById('test_form');
+	myForm.action="/books/" + bookId; 
+
+	myForm.submit();
+}
+
+</script>
+</head>
+<body>
+
+	<h1>5. 删除Book接口测试</h1>
+	<p>DELETE -- /books/xxx</p>
+	<hr/>
+
+	表单方式：<br/>
+	<form action="/books" method="DELETE" id="test_form">
+		提交参数：<br/>
+		bookId:<input type="text" name="bookId" id="bookId" /><br/>
+		<br/>
+		<input type="submit" value="delete by form(form表单提交PUT和DELETE的method很多浏览器都不支持，我也没测成功，咱们这儿就不试了)" onclick="submitForm()" disabled="disabled" />
+	</form>
+	<hr/>
+
+	Ajax方式：<br/>
+	<button onclick="deleteByAjax()">delete by Ajax</button><br/>
+	<textarea id="resultData" rows="15" cols="50">接口返回的数据会显示在这里</textarea>
+
+</body>
+</html>
